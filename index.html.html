@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>danycutsz · ¿Cómo estuvo?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --surface: #141414;
+    --card: #1c1c1c;
+    --border: #2a2a2a;
+    --gold: #c9a84c;
+    --gold-dim: #8a6d2a;
+    --gold-bg: #1f1a0e;
+    --white: #f0f0f0;
+    --muted: #666;
+    --danger: #c0392b;
+    --green: #27ae60;
+  }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 60px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    width: 100%;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 30px 24px 22px;
+    text-align: center;
+  }
+  .header-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .header-brand span { color: var(--white); }
+  .header-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .header-desc {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.5;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .header-desc strong { color: var(--white); font-weight: 500; }
+
+  /* ── FORM ── */
+  .form-wrap {
+    width: 100%;
+    max-width: 480px;
+    padding: 24px 18px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 18px;
+    transition: border-color 0.2s;
+  }
+  .q-card.answered { border-color: var(--gold-dim); }
+
+  .q-num {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 5px;
+  }
+  .q-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .q-hint {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+    display: block;
+    margin-top: 3px;
+  }
+
+  /* ── STARS ── */
+  .stars {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    padding: 4px 0;
+  }
+  .stars input { display: none; }
+  .stars label {
+    font-size: 38px;
+    cursor: pointer;
+    color: var(--border);
+    transition: color 0.1s, transform 0.1s;
+    user-select: none;
+    line-height: 1;
+  }
+  .stars label.active { color: var(--gold); }
+  .stars label:active { transform: scale(1.15); }
+  .star-caption {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 10px;
+    min-height: 16px;
+    transition: color 0.15s;
+  }
+
+  /* ── OPTIONS ── */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .option-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 12px 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    line-height: 1.4;
+  }
+  .option-btn:hover { border-color: var(--gold-dim); }
+  .option-btn.selected {
+    border-color: var(--gold);
+    background: var(--gold-bg);
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ── CHECKBOXES (multi-select) ── */
+  .checks {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .check-item:hover { border-color: var(--gold-dim); }
+  .check-item.selected {
+    border-color: var(--gold);
+    background: var(--gold-bg);
+  }
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .check-item.selected .check-box {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #0a0a0a;
+  }
+  .check-text {
+    font-size: 13px;
+    color: var(--white);
+    line-height: 1.3;
+  }
+  .check-item.selected .check-text { color: var(--gold); font-weight: 500; }
+
+  /* ninguno btn */
+  .none-btn {
+    background: transparent;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    padding: 10px 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .none-btn:hover, .none-btn.selected { border-color: var(--gold-dim); color: var(--white); }
+  .none-btn.selected { background: var(--gold-bg); color: var(--gold); border-style: solid; border-color: var(--gold); }
+
+  /* ── TEXTAREA ── */
+  textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 12px 14px;
+    resize: none;
+    outline: none;
+    transition: border-color 0.15s;
+    min-height: 90px;
+    line-height: 1.5;
+  }
+  textarea::placeholder { color: var(--muted); }
+  textarea:focus { border-color: var(--gold-dim); }
+
+  /* ── SUBMIT ── */
+  .btn-submit {
+    width: 100%;
+    background: var(--gold);
+    border: none;
+    border-radius: 8px;
+    color: #0a0a0a;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s, transform 0.1s;
+    margin-top: 4px;
+  }
+  .btn-submit:hover { background: #dab84d; }
+  .btn-submit:active { transform: scale(0.98); }
+
+  .progress-bar {
+    width: 100%;
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    margin-bottom: 12px;
+  }
+
+  /* ── THANKS ── */
+  #thanks {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    text-align: center;
+    padding: 40px 28px;
+    gap: 14px;
+  }
+  .thanks-icon { font-size: 52px; }
+  .thanks-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+  .thanks-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--white);
+  }
+  .thanks-sub {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 260px;
+    line-height: 1.6;
+  }
+  .gold-line {
+    width: 36px;
+    height: 2px;
+    background: var(--gold);
+    border-radius: 2px;
+  }
+
+  /* ── ADMIN ── */
+  #admin {
+    display: none;
+    width: 100%;
+    max-width: 560px;
+    padding: 24px 18px 0;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .admin-header {
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 18px;
+  }
+  .admin-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+  .admin-title {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .stat-title {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-bar-wrap { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .stat-bar-fill { height: 100%; background: var(--gold); border-radius: 2px; }
+  .stat-val { font-weight: 600; color: var(--white); font-size: 14px; min-width: 40px; text-align: right; }
+  .star-avg {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .open-item {
+    font-size: 13px;
+    color: var(--white);
+    padding: 10px 12px;
+    background: var(--surface);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border-left: 2px solid var(--gold-dim);
+    line-height: 1.5;
+  }
+  .open-date { font-size: 10px; color: var(--muted); margin-top: 4px; }
+  .open-empty { font-size: 13px; color: var(--muted); font-style: italic; }
+  .badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #0a0a0a;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .btn-clear {
+    background: transparent;
+    border: 1px solid var(--danger);
+    border-radius: 8px;
+    color: var(--danger);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 12px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.15s;
+  }
+  .btn-clear:hover { background: #1a0808; }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 2px;
+  }
+  .summary-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .summary-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .summary-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ─── SURVEY ─── -->
+<div id="survey-view">
+  <div class="header">
+    <div class="header-brand">dany<span>cutsz</span></div>
+    <div class="header-sub">Barbería · Jalisco</div>
+    <p class="header-desc">
+      Tu opinión es <strong>100% anónima</strong>.<br>
+      Sé directo — me ayuda más saber qué falló que solo lo bueno.
+    </p>
+  </div>
+
+  <div class="form-wrap">
+
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-label" id="progress-label">0 de 5 preguntas</div>
+
+    <!-- P1: Calidad general del corte (estrellas) -->
+    <div class="q-card" id="card-1">
+      <span class="q-num">01 de 05</span>
+      <div class="q-label">
+        ¿Cómo quedó el resultado de tu corte?
+        <span class="q-hint">Tu valoración general del trabajo.</span>
+      </div>
+      <div class="stars" id="stars-1">
+        <input type="radio" name="q1" id="s1-1" value="1"><label for="s1-1" data-q="1" data-v="1">★</label>
+        <input type="radio" name="q1" id="s1-2" value="2"><label for="s1-2" data-q="1" data-v="2">★</label>
+        <input type="radio" name="q1" id="s1-3" value="3"><label for="s1-3" data-q="1" data-v="3">★</label>
+        <input type="radio" name="q1" id="s1-4" value="4"><label for="s1-4" data-q="1" data-v="4">★</label>
+        <input type="radio" name="q1" id="s1-5" value="5"><label for="s1-5" data-q="1" data-v="5">★</label>
+      </div>
+      <div class="star-caption" id="star-caption-1"></div>
+    </div>
+
+    <!-- P2: Qué falló exactamente (multi-select condicional) -->
+    <div class="q-card" id="card-2">
+      <span class="q-num">02 de 05</span>
+      <div class="q-label">
+        ¿Hubo algo específico que no quedó como esperabas?
+        <span class="q-hint">Puedes marcar más de uno. Si todo estuvo bien, selecciona "Nada que señalar".</span>
+      </div>
+      <div class="checks" id="checks-2">
+        <div class="check-item" data-q="2" data-v="El fade / degradado">
+          <div class="check-box">✓</div>
+          <div class="check-text">El fade o degradado — no quedó parejo o suave</div>
+        </div>
+        <div class="check-item" data-q="2" data-v="Las líneas / perfilado">
+          <div class="check-box">✓</div>
+          <div class="check-text">Las líneas o perfilado — no estaban limpias o simétricas</div>
+        </div>
+        <div class="check-item" data-q="2" data-v="La forma / estructura">
+          <div class="check-box">✓</div>
+          <div class="check-text">La forma o estructura — no era lo que pedí</div>
+        </div>
+        <div class="check-item" data-q="2" data-v="El largo">
+          <div class="check-box">✓</div>
+          <div class="check-text">El largo — quedó más corto o más largo de lo que quería</div>
+        </div>
+        <div class="check-item" data-q="2" data-v="La barba / bigote">
+          <div class="check-box">✓</div>
+          <div class="check-text">La barba o bigote — no quedó como lo pedí</div>
+        </div>
+        <div class="check-item" data-q="2" data-v="El acabado / terminado">
+          <div class="check-box">✓</div>
+          <div class="check-text">El acabado o terminado — detalles sin pulir</div>
+        </div>
+        <button class="none-btn" id="none-2" data-q="2" data-v="Nada que señalar">✓ &nbsp;Nada que señalar — todo bien</button>
+      </div>
+    </div>
+
+    <!-- P3: Trato y atención -->
+    <div class="q-card" id="card-3">
+      <span class="q-num">03 de 05</span>
+      <div class="q-label">¿Cómo fue el trato durante el servicio?</div>
+      <div class="options" id="opts-3">
+        <button class="option-btn" data-q="3" data-v="Excelente">Excelente — me sentí cómodo y bien atendido</button>
+        <button class="option-btn" data-q="3" data-v="Bueno">Bueno — sin quejas</button>
+        <button class="option-btn" data-q="3" data-v="Regular">Regular — puede mejorar</button>
+        <button class="option-btn" data-q="3" data-v="Malo">Malo — no me sentí cómodo</button>
+      </div>
+    </div>
+
+    <!-- P4: Tiempo de espera -->
+    <div class="q-card" id="card-4">
+      <span class="q-num">04 de 05</span>
+      <div class="q-label">¿El tiempo de espera antes de tu turno fue?</div>
+      <div class="options" id="opts-4">
+        <button class="option-btn" data-q="4" data-v="Sin espera">Sin espera — entré directo</button>
+        <button class="option-btn" data-q="4" data-v="Aceptable">Aceptable — esperé poco</button>
+        <button class="option-btn" data-q="4" data-v="Largo">Largo — esperé demasiado</button>
+      </div>
+    </div>
+
+    <!-- P5: Regresarías / recomendarías -->
+    <div class="q-card" id="card-5">
+      <span class="q-num">05 de 05</span>
+      <div class="q-label">¿Regresarías o recomendarías danycutsz?</div>
+      <div class="options" id="opts-5">
+        <button class="option-btn" data-q="5" data-v="Sí, ambas">Sí — regreso y los recomiendo</button>
+        <button class="option-btn" data-q="5" data-v="Solo regreso">Regreso, pero aún no recomendaría</button>
+        <button class="option-btn" data-q="5" data-v="Tal vez">Tal vez — depende de la próxima visita</button>
+        <button class="option-btn" data-q="5" data-v="No">No regresaría</button>
+      </div>
+    </div>
+
+    <!-- P6: Abierta opcional -->
+    <div class="q-card">
+      <span class="q-num">Opcional</span>
+      <div class="q-label">
+        ¿Algo más que quieras decirme?
+        <span class="q-hint">Quejas, sugerencias, lo que sea. Entre más específico, mejor.</span>
+      </div>
+      <textarea id="open-answer" placeholder="Escríbelo aquí..." maxlength="500"></textarea>
+    </div>
+
+    <button class="btn-submit" onclick="submitSurvey()">Enviar opinión</button>
+
+  </div>
+</div>
+
+<!-- ─── GRACIAS ─── -->
+<div id="thanks">
+  <div class="thanks-icon">✂️</div>
+  <div class="gold-line"></div>
+  <div class="thanks-brand">danycutsz</div>
+  <div class="thanks-title">¡Gracias por tu honestidad!</div>
+  <p class="thanks-sub">Tu opinión llega directo a mí y la uso para mejorar cada servicio.</p>
+</div>
+
+<!-- ─── ADMIN ─── -->
+<div id="admin">
+  <div class="admin-header">
+    <div class="admin-brand">danycutsz</div>
+    <div class="admin-title">Panel de estadísticas</div>
+  </div>
+  <div id="admin-content"></div>
+</div>
+
+<script>
+// ── STATE ──
+const answers = { q1: null, q2: [], q3: null, q4: null, q5: null };
+const REQUIRED = ['q1', 'q2', 'q3', 'q4', 'q5'];
+const TOTAL_Q = 5;
+
+const starCaptions = ['', 'Muy malo', 'Malo', 'Regular', 'Bueno', 'Excelente'];
+
+function updateProgress() {
+  let done = 0;
+  if (answers.q1 !== null) done++;
+  if (answers.q2.length > 0) done++;
+  if (answers.q3 !== null) done++;
+  if (answers.q4 !== null) done++;
+  if (answers.q5 !== null) done++;
+  document.getElementById('progress-fill').style.width = (done / TOTAL_Q * 100) + '%';
+  document.getElementById('progress-label').textContent = `${done} de ${TOTAL_Q} preguntas`;
+}
+
+function markCard(num) {
+  document.getElementById('card-' + num).classList.add('answered');
+  updateProgress();
+}
+
+// ── STARS ──
+document.querySelectorAll('.stars label').forEach(label => {
+  label.addEventListener('click', () => {
+    const q = label.dataset.q;
+    const v = parseInt(label.dataset.v);
+    answers['q' + q] = v;
+    document.querySelectorAll(`#stars-${q} label`).forEach((l, i) => {
+      l.classList.toggle('active', i < v);
+    });
+    document.getElementById('star-caption-' + q).textContent = starCaptions[v];
+    markCard(parseInt(q));
+  });
+});
+
+// ── CHECKBOXES (q2 multi-select) ──
+document.querySelectorAll('#checks-2 .check-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const v = item.dataset.v;
+    // deselect "ninguno" if picking an issue
+    document.getElementById('none-2').classList.remove('selected');
+    const noneIdx = answers.q2.indexOf('Nada que señalar');
+    if (noneIdx > -1) answers.q2.splice(noneIdx, 1);
+
+    if (item.classList.contains('selected')) {
+      item.classList.remove('selected');
+      answers.q2 = answers.q2.filter(x => x !== v);
+    } else {
+      item.classList.add('selected');
+      answers.q2.push(v);
+    }
+    if (answers.q2.length === 0) {
+      // treat as unanswered
+      document.getElementById('card-2').classList.remove('answered');
+      updateProgress();
+    } else {
+      markCard(2);
+    }
+  });
+});
+
+document.getElementById('none-2').addEventListener('click', () => {
+  const btn = document.getElementById('none-2');
+  // clear all checks
+  document.querySelectorAll('#checks-2 .check-item').forEach(i => i.classList.remove('selected'));
+  answers.q2 = ['Nada que señalar'];
+  btn.classList.add('selected');
+  markCard(2);
+});
+
+// ── SINGLE OPTIONS (q3, q4, q5) ──
+document.querySelectorAll('.option-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const q = btn.dataset.q;
+    const v = btn.dataset.v;
+    answers['q' + q] = v;
+    document.querySelectorAll(`#opts-${q} .option-btn`).forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    markCard(parseInt(q));
+  });
+});
+
+// ── SUBMIT ──
+function submitSurvey() {
+  const missing = REQUIRED.filter(k => {
+    if (k === 'q2') return answers.q2.length === 0;
+    return answers[k] === null;
+  });
+
+  if (missing.length) {
+    // scroll to first unanswered
+    const firstMissing = missing[0].replace('q', '');
+    const card = document.getElementById('card-' + firstMissing);
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.style.borderColor = '#c0392b';
+    setTimeout(() => card.style.borderColor = '', 1500);
+    return;
+  }
+
+  const record = {
+    ts: new Date().toISOString(),
+    q1: answers.q1,
+    q2: [...answers.q2],
+    q3: answers.q3,
+    q4: answers.q4,
+    q5: answers.q5,
+    open: document.getElementById('open-answer').value.trim()
+  };
+
+  const existing = JSON.parse(localStorage.getItem('dany_surveys') || '[]');
+  existing.push(record);
+  localStorage.setItem('dany_surveys', JSON.stringify(existing));
+
+  document.getElementById('survey-view').style.display = 'none';
+  document.getElementById('thanks').style.display = 'flex';
+  window.scrollTo(0, 0);
+}
+
+// ── ADMIN ──
+function loadAdmin() {
+  document.getElementById('survey-view').style.display = 'none';
+  document.getElementById('thanks').style.display = 'none';
+  const adminEl = document.getElementById('admin');
+  adminEl.style.display = 'flex';
+
+  const data = JSON.parse(localStorage.getItem('dany_surveys') || '[]');
+  const total = data.length;
+
+  if (total === 0) {
+    document.getElementById('admin-content').innerHTML =
+      '<div class="stat-card"><p class="open-empty">Sin respuestas aún.</p></div>';
+    return;
+  }
+
+  const avgStars = (data.reduce((s, r) => s + (r.q1 || 0), 0) / total).toFixed(1);
+
+  function count(key, val) {
+    return data.filter(r => r[key] === val).length;
+  }
+  function pct(n) { return total > 0 ? Math.round((n / total) * 100) : 0; }
+
+  // Q2 — fallas (multi-select, acumulado)
+  const failOptions = ['El fade / degradado','Las líneas / perfilado','La forma / estructura','El largo','La barba / bigote','El acabado / terminado'];
+  const failCounts = {};
+  failOptions.forEach(f => { failCounts[f] = 0; });
+  let nada = 0;
+  data.forEach(r => {
+    if (!r.q2) return;
+    r.q2.forEach(v => {
+      if (v === 'Nada que señalar') nada++;
+      else if (failCounts[v] !== undefined) failCounts[v]++;
+    });
+  });
+  const maxFail = Math.max(...Object.values(failCounts), 1);
+
+  const openAnswers = data.filter(r => r.open).map(r => ({ text: r.open, ts: r.ts }));
+
+  // Porcentaje positivo NPS-like
+  const positivos = data.filter(r => r.q5 === 'Sí, ambas').length;
+  const positivoPct = pct(positivos);
+
+  document.getElementById('admin-content').innerHTML = `
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-num">${total}</div>
+        <div class="summary-lbl">Respuestas totales</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num">${avgStars}★</div>
+        <div class="summary-lbl">Promedio del corte</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num">${positivoPct}%</div>
+        <div class="summary-lbl">Regresan y recomiendan</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num">${openAnswers.length}</div>
+        <div class="summary-lbl">Comentarios escritos</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-title">¿Qué falló exactamente? <span class="badge">${total} resp.</span></div>
+      <div class="stat-row" style="color:var(--green);border-bottom:1px solid var(--border)">
+        <span>✓ Sin fallas reportadas</span>
+        <span class="stat-val">${nada} <small style="color:var(--muted);font-size:11px">(${pct(nada)}%)</small></span>
+      </div>
+      ${failOptions.map(f => `
+        <div class="stat-row">
+          <span style="max-width:180px;line-height:1.3">${f}</span>
+          <div style="display:flex;align-items:center;gap:8px;min-width:100px">
+            <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:${Math.round(failCounts[f]/maxFail*100)}%"></div></div>
+            <span class="stat-val">${failCounts[f]} <small style="color:var(--muted);font-size:11px">(${pct(failCounts[f])}%)</small></span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-title">Trato durante el servicio</div>
+      ${['Excelente','Bueno','Regular','Malo'].map(v => `
+        <div class="stat-row">
+          <span>${v}</span>
+          <div style="display:flex;align-items:center;gap:8px;min-width:100px">
+            <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:${pct(count('q3',v))}%"></div></div>
+            <span class="stat-val">${count('q3',v)} <small style="color:var(--muted);font-size:11px">(${pct(count('q3',v))}%)</small></span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-title">Tiempo de espera</div>
+      ${['Sin espera','Aceptable','Largo'].map(v => `
+        <div class="stat-row">
+          <span>${v}</span>
+          <div style="display:flex;align-items:center;gap:8px;min-width:100px">
+            <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:${pct(count('q4',v))}%"></div></div>
+            <span class="stat-val">${count('q4',v)} <small style="color:var(--muted);font-size:11px">(${pct(count('q4',v))}%)</small></span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-title">¿Regresarían / recomendarían?</div>
+      ${['Sí, ambas','Solo regreso','Tal vez','No'].map(v => `
+        <div class="stat-row">
+          <span>${v}</span>
+          <div style="display:flex;align-items:center;gap:8px;min-width:100px">
+            <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:${pct(count('q5',v))}%"></div></div>
+            <span class="stat-val">${count('q5',v)} <small style="color:var(--muted);font-size:11px">(${pct(count('q5',v))}%)</small></span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-title">Comentarios escritos (${openAnswers.length})</div>
+      ${openAnswers.length === 0
+        ? '<p class="open-empty">Sin comentarios todavía.</p>'
+        : openAnswers.map(r => `
+            <div class="open-item">
+              "${r.text}"
+              <div class="open-date">${new Date(r.ts).toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })}</div>
+            </div>
+          `).join('')}
+    </div>
+
+    <button class="btn-clear" onclick="clearData()">Borrar todos los datos</button>
+    <div style="height:20px"></div>
+  `;
+}
+
+function clearData() {
+  if (confirm('¿Borrar todas las respuestas? No se puede deshacer.')) {
+    localStorage.removeItem('dany_surveys');
+    loadAdmin();
+  }
+}
+
+// ── ROUTING ──
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('admin')) loadAdmin();
+});
+</script>
+</body>
+</html>
